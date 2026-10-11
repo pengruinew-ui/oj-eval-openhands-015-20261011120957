@@ -61,6 +61,7 @@ public:
     
     void insert(const std::string& index, int value) {
         data[index].insert(value);
+        saveToFile();
     }
     
     void remove(const std::string& index, int value) {
@@ -70,6 +71,7 @@ public:
             if (it->second.empty()) {
                 data.erase(it);
             }
+            saveToFile();
         }
     }
     
