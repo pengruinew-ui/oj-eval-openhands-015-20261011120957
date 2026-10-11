@@ -8,18 +8,7 @@
 #include <sstream>
 #include <cctype>
 
-const std::string DATA_FILE = "database.dat";
-
-// Structure to store key-value pairs
-struct Record {
-    std::string index;
-    int value;
-    
-    bool operator<(const Record& other) const {
-        if (index != other.index) return index < other.index;
-        return value < other.value;
-    }
-};
+const std::string DATA_FILE = "database.txt";
 
 // Database class for file-based storage
 class FileDatabase {
@@ -28,20 +17,25 @@ private:
     
     // Load data from file
     void loadFromFile() {
-        std::ifstream file(DATA_FILE, std::ios::binary);
+        std::ifstream file(DATA_FILE);
         if (!file) return; // File doesn't exist yet
         
         data.clear();
-        Record record;
-        while (file.read(reinterpret_cast<char*>(&record), sizeof(Record))) {
-            data[record.index].insert(record.value);
+        std::string line;
+        while (std::getline(file, line)) {
+            std::istringstream iss(line);
+            std::string index;
+            int value;
+            if (iss >> index >> value) {
+                data[index].insert(value);
+            }
         }
         file.close();
     }
     
     // Save data to file
     void saveToFile() {
-        std::ofstream file(DATA_FILE, std::ios::binary | std::ios::trunc);
+        std::ofstream file(DATA_FILE);
         if (!file) {
             std::cerr << "Error: Cannot write to database file" << std::endl;
             return;
@@ -50,8 +44,7 @@ private:
         for (const auto& entry : data) {
             const std::string& index = entry.first;
             for (int value : entry.second) {
-                Record record{index, value};
-                file.write(reinterpret_cast<const char*>(&record), sizeof(Record));
+                file << index << " " << value << std::endl;
             }
         }
         file.close();
