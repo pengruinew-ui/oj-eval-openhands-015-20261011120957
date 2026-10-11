@@ -8,7 +8,7 @@
 #include <sstream>
 #include <cctype>
 
-const std::string DATA_FILE = "database.txt";
+const std::string DATA_FILE = "/workspace/problem_015/database.txt";
 
 // Database class for file-based storage
 class FileDatabase {
